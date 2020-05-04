@@ -1,4 +1,6 @@
+let cart = []
 let modalQt = 1
+let modalKey
 
 const c = (el) => document.querySelector(el) // função auxiliar para 'pegar' elementos com querySelector()
 const cs = (el) => document.querySelectorAll(el) // função auxiliar para 'pegar' elementos com querySelectorAll()
@@ -19,6 +21,7 @@ pizzaJson.map((item, index)=>{ // mapeando o json
 
         let key = e.target.closest('.pizza-item').getAttribute('data-key')
         modalQt = 1
+        modalKey = key
         
         c('.pizzaBig img').src = pizzaJson[key].img
         c('.pizzaInfo h1').innerHTML = pizzaJson[key].name
@@ -50,32 +53,47 @@ pizzaJson.map((item, index)=>{ // mapeando o json
 })
 
 // Eventos do modal
-function closeModal() {
+function closeModal() { // função para ocultar o modal
     c('.pizzaWindowArea').style.opacity = 0
     setTimeout( ()=>{
         c('.pizzaWindowArea').style.display = 'none'
     }, 500)
 }
 
+// adiciona eventos de click e chama a função colseModal nos botões para fechar o modal
 cs('.pizzaInfo--cancelButton, .pizzaInfo--cancelMobileButton').forEach((item)=>{
     item.addEventListener('click', closeModal)
 })
-c('.pizzaInfo--qtmais').addEventListener('click', ()=>{
+c('.pizzaInfo--qtmais').addEventListener('click', ()=>{ // configuração do botão de aumentar quantidade de pizzas
     modalQt++
     c('.pizzaInfo--qt').innerHTML = modalQt
 })
 
-c('.pizzaInfo--qtmenos').addEventListener('click', ()=>{
+c('.pizzaInfo--qtmenos').addEventListener('click', ()=>{ // configuração do botão de diminuir quantidade de pizzas
     if ( modalQt > 1 ) {
         modalQt--
         c('.pizzaInfo--qt').innerHTML = modalQt
     }
 })
 
+// mudando o estilo do tamanho da pizza selecionado
 cs('.pizzaInfo--size').forEach((size, sizeIndex)=>{
     size.addEventListener('click', (e)=>{
         c('.pizzaInfo--size.selected').classList.remove('selected')
         size.classList.add('selected')
         
     })
+})
+
+// configura o botão adicionar ao carrinho
+c('.pizzaInfo--addButton').addEventListener('click', ()=>{
+    let size = parseInt(c('.pizzaInfo--size.selected').getAttribute('data-key'))
+
+    cart.push({
+        id: pizzaJson[modalKey].id,
+        size,
+        qt: modalQt
+    })
+
+    closeModal()
 })

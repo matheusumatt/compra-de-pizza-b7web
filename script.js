@@ -1,3 +1,5 @@
+let modalQt = 1
+
 const c = (el) => document.querySelector(el) // função auxiliar para 'pegar' elementos com querySelector()
 const cs = (el) => document.querySelectorAll(el) // função auxiliar para 'pegar' elementos com querySelectorAll()
 
@@ -16,10 +18,24 @@ pizzaJson.map((item, index)=>{ // mapeando o json
         e.preventDefault() // altera o comportamento padrão de click no link (tag a)
 
         let key = e.target.closest('.pizza-item').getAttribute('data-key')
+        modalQt = 1
         
         c('.pizzaBig img').src = pizzaJson[key].img
         c('.pizzaInfo h1').innerHTML = pizzaJson[key].name
         c('.pizzaInfo--desc').innerHTML = pizzaJson[key].description
+        c('.pizzaInfo--actualPrice').innerHTML = `R$ ${pizzaJson[key].price.toFixed(2)}`
+
+        c('.pizzaInfo--size.selected').classList.remove('selected')
+        cs('.pizzaInfo--size').forEach((size, sizeIndex)=>{
+
+            if ( sizeIndex == 2 ) {
+                size.classList.add('selected')
+            }
+
+            size.querySelector('span').innerHTML = pizzaJson[key].sizes[sizeIndex]
+        })
+
+        c('.pizzaInfo--qt').innerHTML = modalQt
 
         // exibe o modal
         c('.pizzaWindowArea').style.opacity = 0 // utilizado para dar um efeito ao mostrar o modal
